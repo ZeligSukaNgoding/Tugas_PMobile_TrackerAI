@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111111" />
+  <title>AI Object Scanner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">AI</div>
+        <div>
+          <h1>AI Object Scanner</h1>
+          <p>Deteksi objek real-time dari kamera.</p>
+        </div>
+      </div>
+      <div class="status-group">
+        <span id="modelStatus" class="status-pill status-neutral">Model belum dimuat</span>
+        <span id="dbStatus" class="status-pill status-neutral">DB: Mock Mode</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="scanner card">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">SCANNER</span>
+            <h2>Kamera</h2>
+          </div>
+          <span id="aiState" class="state-badge">AI OFF</span>
+        </div>
+
+        <div class="scanner-grid">
+          <div>
+            <div id="cameraContainer" class="camera-container">
+              <video id="video" autoplay playsinline muted></video>
+              <canvas id="canvas"></canvas>
+              <div id="overlayMsg" class="overlay-msg">
+                <div class="overlay-spinner"></div>
+                <p id="overlayText">Klik Start Camera untuk memulai.</p>
+              </div>
+            </div>
+
+            <div class="camera-controls">
+              <div class="camera-select">
+                <label for="facingMode">Kamera</label>
+                <select id="facingMode">
+                  <option value="environment">Belakang</option>
+                  <option value="user">Depan</option>
+                </select>
+              </div>
+              <div class="button-row">
+                <button id="startCameraBtn" class="btn btn-primary">Start Camera</button>
+                <button id="stopCameraBtn" class="btn btn-secondary" disabled>Stop</button>
+              </div>
+            </div>
+            <p class="hint">Gunakan HTTPS atau localhost agar kamera dapat diakses browser.</p>
+          </div>
+
+          <aside class="controls">
+            <div class="control-section">
+              <div class="control-title">
+                <h3>AI Detection</h3>
+                <span id="confidenceValue">60%</span>
+              </div>
+              <button id="loadModelBtn" class="btn btn-secondary full-width">Muat Model AI</button>
+              <button id="toggleAiBtn" class="btn btn-primary full-width" disabled>Start AI</button>
+
+              <label class="range-label" for="confidenceRange">Confidence threshold</label>
+              <input id="confidenceRange" type="range" min="30" max="90" step="5" value="60" />
+              <div class="range-scale"><span>30%</span><span>60%</span><span>90%</span></div>
+            </div>
+
+            <div class="control-section">
+              <div class="control-title">
+                <h3>Target</h3>
+                <span class="muted">7 kelas</span>
+              </div>
+              <div id="targetClasses" class="target-list"></div>
+            </div>
+
+            <div class="control-section">
+              <div class="control-title">
+                <h3>Database</h3>
+                <span class="muted">Mock / Firebase</span>
+              </div>
+              <div class="segmented" role="group" aria-label="Mode database">
+                <button class="segment active" data-db-mode="mock">Mock</button>
+                <button class="segment" data-db-mode="firebase">Firebase</button>
+              </div>
+              <p class="hint small">Firebase digunakan jika konfigurasi di <code>app.js</code> sudah diisi.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <div class="stat card"><span>Objek terdeteksi</span><strong id="detectionCount">0</strong></div>
+        <div class="stat card"><span>Kamera</span><strong id="cameraStatus">OFF</strong></div>
+        <div class="stat card"><span>Log</span><strong id="logCount">0</strong></div>
+      </section>
+
+      <section class="card logs-section">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">LOG</span>
+            <h2>Detection Log</h2>
+          </div>
+          <div class="header-actions">
+            <span id="logModeBadge" class="mode-badge">MOCK</span>
+            <button id="exportBtn" class="btn btn-secondary">Export CSV</button>
+            <button id="clearLogsBtn" class="btn btn-ghost">Clear</button>
+          </div>
+        </div>
+
+        <div class="data-summary">
+          <span>Riwayat deteksi tersimpan otomatis.</span>
+          <span id="syncIndicator" class="sync-indicator"><i></i> Menunggu data</span>
+        </div>
+
+        <div id="dataList" class="data-list">
+          <div class="empty-state">
+            <strong>Belum ada data</strong>
+            <span>Start Camera → Muat Model → Start AI</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-info card">
+        <div>
+          <span class="eyebrow">ALUR</span>
+          <h2>Alur aplikasi</h2>
+        </div>
+        <div class="flow-grid">
+          <span>01 Kamera</span><span>02 Model AI</span><span>03 Deteksi</span>
+          <span>04 Bounding Box</span><span>05 Simpan Log</span><span>06 Export</span>
+        </div>
+      </section>
+    </main>
+
+    <footer>AI Object Scanner · COCO-SSD · Firebase / LocalStorage</footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
